@@ -5,16 +5,36 @@ struct SettingsView: View {
     @Binding var settings: Settings
     
     var body: some View {
-        VStack {
-            Form {
-                Section(header: Text("Multiplikationstabell att öva på?")) {
-                    Stepper("\(settings.multiplicationTable)", value: $settings.multiplicationTable, in: 1...12)
-                }
-                Section(header: Text("Hur många frågor vill du ha?")) {
-                    Stepper("\(settings.numberOfQuestions)", value: $settings.numberOfQuestions, in: 5...25, step: 5)
+        VStack(alignment: .leading) {
+            HStack {
+                Image("chick")
+                VStack(alignment: .leading) {
+                    Text("Hej! Vad kul att du vill lära dig lite multiplikationstabell!")
+                    Text("Här nedan ställer du in vilken tabell du vill öva på samt hur många frågor du vill va.")
                 }
             }
             Spacer()
+            VStack(alignment: .leading) {
+                HStack {
+                    Image("parrot")
+                    Text("Vilken tabell vill du öva på? Byt med knapparna här nere till höger.")
+                }
+                Stepper("\(settings.multiplicationTable):ans tabell", value: $settings.multiplicationTable, in: 1...12)
+            }
+            Spacer()
+            VStack(alignment: .leading) {
+                HStack {
+                    Image("parrot")
+                    Text("Hur många frågor vill du ha?")
+                }
+                Stepper("\(settings.numberOfQuestions) frågor tack", value: $settings.numberOfQuestions, in: 5...25, step: 5)
+            }
+            
+            Spacer()
+            HStack {
+                Image("duck")
+                Text("Om du är redo att börja så är det bara att trycka på startkvacken.")
+            }
             Button("Starta") {
                 self.commit()
             }
@@ -22,7 +42,7 @@ struct SettingsView: View {
             .padding()
             .background(Color.green)
             .foregroundColor(.white)
-        }
+        }.padding()
     }
     
     private func commit() {
