@@ -12,13 +12,32 @@ struct GameView: View {
         VStack {
             if !gameFinished {
                 Text("Vad blir \(activeQuestion.x) * \(activeQuestion.y)")
-                TextField("Ditt svar här", text: $answer, onCommit: { self.checkAnswer() })
-                    .keyboardType(.numberPad)
-                .padding()
-            } else {
-                Text("Du fick \(correctAnswers) av \(settings.numberOfQuestions)")
+                    .fontWeight(.heavy)
+                    .largeFontStyle()
             }
-        }
+            if answer != "" {
+                Spacer()
+                Text(answer)
+                    .fontWeight(.heavy)
+                    .largeFontStyle()
+                    .animation(.default)
+            }
+            if gameFinished {
+                Spacer()
+                Text("Du fick \(correctAnswers) av \(settings.numberOfQuestions)")
+                    .fontWeight(.heavy)
+                    .largeFontStyle()
+                    .transition(.slide)
+            }
+            Spacer()
+            if !gameFinished {
+                KeypadView(answer: $answer, onCommit: self.checkAnswer)
+                    .padding()
+                    .background(Color.white.cornerRadius(20))
+            }
+        }.navigationBarItems(leading: Button("Börja om") {
+            self.settings.settingsDone = false
+        })
     }
     
     var activeQuestion: Question {
@@ -31,7 +50,10 @@ struct GameView: View {
             correctAnswers += 1
         }
         if activeQuestionIndex == settings.questions.count - 1 {
-            gameFinished = true
+            withAnimation {
+                answer = ""
+                gameFinished = true
+            }
         } else {
             answer = ""
             activeQuestionIndex += 1

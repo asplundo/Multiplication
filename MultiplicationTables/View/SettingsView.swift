@@ -5,51 +5,73 @@ struct SettingsView: View {
     @Binding var settings: Settings
     
     var body: some View {
-        VStack(alignment: .leading) {
-            HStack {
-                Image("chick")
+        ScrollView {
+            VStack(alignment: .leading) {
+                HStack {
+                    Image("chick")
+                    VStack(alignment: .leading) {
+                        Text("Hej! Vad kul att du vill lära dig lite multiplikationstabell!")
+                        Text("Här nedan ställer du in vilken tabell du vill öva på samt hur många frågor du vill va.")
+                    }
+                }
+                .padding()
+                .background(Color.white.cornerRadius(20))
+                Spacer()
                 VStack(alignment: .leading) {
-                    Text("Hej! Vad kul att du vill lära dig lite multiplikationstabell!")
-                    Text("Här nedan ställer du in vilken tabell du vill öva på samt hur många frågor du vill va.")
+                    HStack {
+                        Image("parrot")
+                        Text("Vilken tabell vill du öva på? Byt med knapparna här nere till höger.")
+                    }
+                    Stepper("\(settings.multiplicationTable):ans tabell", value: $settings.multiplicationTable, in: 1...12)
+                    
                 }
-            }
-            Spacer()
-            VStack(alignment: .leading) {
-                HStack {
-                    Image("parrot")
-                    Text("Vilken tabell vill du öva på? Byt med knapparna här nere till höger.")
+                .padding()
+                .background(Color.white.cornerRadius(20))
+                Spacer()
+                VStack(alignment: .leading) {
+                    HStack {
+                        Image("penguin")
+                        Text("Hur många frågor vill du ha?")
+                    }
+                    Stepper("\(settings.numberOfQuestions) frågor tack", value: $settings.numberOfQuestions, in: 5...25, step: 5)
                 }
-                Stepper("\(settings.multiplicationTable):ans tabell", value: $settings.multiplicationTable, in: 1...12)
-            }
-            Spacer()
-            VStack(alignment: .leading) {
-                HStack {
-                    Image("parrot")
-                    Text("Hur många frågor vill du ha?")
+                .padding()
+                .background(Color.white.cornerRadius(20))
+                Spacer()
+                VStack {
+                    HStack {
+                        Image("duck")
+                        Text("Om du är redo att börja så är det bara att trycka på startkvacken.")
+                    }
+                    Button("Starta") {
+                        self.commit()
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.green)
+                    .foregroundColor(.white)
+                    .cornerRadius(20)
                 }
-                Stepper("\(settings.numberOfQuestions) frågor tack", value: $settings.numberOfQuestions, in: 5...25, step: 5)
+                .padding()
+                .background(Color.white.cornerRadius(20))
             }
-            
-            Spacer()
-            HStack {
-                Image("duck")
-                Text("Om du är redo att börja så är det bara att trycka på startkvacken.")
-            }
-            Button("Starta") {
-                self.commit()
-            }
-            .frame(maxWidth: .infinity)
-            .padding()
-            .background(Color.green)
-            .foregroundColor(.white)
-        }.padding()
+        }
+        .padding()
+        .onAppear {
+            self.settings.numberOfQuestions = 5
+            self.settings.multiplicationTable = 1
+            self.settings.questions.removeAll()
+        }
     }
     
     private func commit() {
         for _ in 0..<settings.numberOfQuestions {
             settings.questions.append(Question(x: settings.multiplicationTable, y: Int.random(in: 1...settings.numberOfQuestions)))
         }
-        settings.settingsDone.toggle()
+        withAnimation {
+            settings.settingsDone.toggle()
+        }
+        
     }
 }
 
